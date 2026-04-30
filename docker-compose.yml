@@ -1,0 +1,31 @@
+version: '3.8'
+
+services:
+  # 서비스 이름 (내 마음대로 정함)
+  ai-dev-env:
+    # 현재 폴더의 Dockerfile을 빌드해서 이미지로 사용
+    build: .
+    
+    # 컨테이너 이름 고정
+    container_name: my-ai-agent
+    
+    # [핵심] 파일 유실 방지 설정
+    volumes:
+      # 호스트(리눅스) 현재 폴더를 컨테이너 /app에 동기화 (바인드 마운트)
+      - .:/app
+      
+      # AI 도구(Claude, Gemini) 설정 파일들을 전용 볼륨에 보관 (컨테이너 지워도 유지)
+      - ai_config:/root/.config
+      - claude_storage:/root/.claude-code
+    
+    # 터미널 입력을 계속 유지 (docker run -it와 동일)
+    stdin_open: true
+    tty: true
+    
+    # 컨테이너 시작 시 기본 경로
+    working_dir: /app
+
+# 영구 보관할 데이터 저장소 정의
+volumes:
+  ai_config:
+  claude_storage:
